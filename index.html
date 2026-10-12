@@ -1,0 +1,560 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>StepCraft</title>
+<meta name="description" content="Learn AI and Solana development one step at a time with workflow puzzles and a beginner glossary.">
+<link rel="icon" href="icon.png">
+<style>
+:root {
+  --forest: #164b40;
+  --lime: #d0ed9c;
+  --accent: #164b40;
+  --bg: #f2f2f7;
+  --surface: #ffffff;
+  --text: #1c1c1e;
+  --muted: #6c6c70;
+  --line: rgba(22, 75, 64, .16);
+  --tint: rgba(22, 75, 64, .08);
+  --warn: #e07a12;
+  --on-forest: #ffffff;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --accent: #b0d97a; --bg: #000000; --surface: #1c1c1e; --text: #f2f2f7; --muted: #a1a1a6;
+    --line: rgba(176, 217, 122, .22); --tint: rgba(176, 217, 122, .12); --forest: #1d5a4c;
+  }
+}
+:root[data-theme="dark"] {
+  --accent: #b0d97a; --bg: #000000; --surface: #1c1c1e; --text: #f2f2f7; --muted: #a1a1a6;
+  --line: rgba(176, 217, 122, .22); --tint: rgba(176, 217, 122, .12); --forest: #1d5a4c;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+body {
+  background: var(--bg); color: var(--text);
+  font: 17px/1.45 -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+button { font: inherit; color: inherit; cursor: pointer; }
+a { color: var(--accent); }
+.topbar {
+  position: sticky; top: 0; z-index: 10;
+  display: flex; align-items: center; gap: 16px; justify-content: space-between;
+  padding: 12px 20px; background: color-mix(in srgb, var(--bg) 86%, transparent);
+  backdrop-filter: blur(18px); border-bottom: 1px solid var(--line);
+}
+.brand { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 19px; }
+.brand img { width: 30px; height: 30px; border-radius: 8px; }
+.tabs { display: flex; gap: 4px; background: var(--surface); padding: 4px; border-radius: 999px; border: 1px solid var(--line); }
+.tabs button {
+  border: 0; background: transparent; padding: 8px 18px; border-radius: 999px; font-size: 15px; font-weight: 600; color: var(--muted);
+}
+.tabs button[aria-selected="true"] { background: var(--forest); color: var(--on-forest); }
+.spacer { width: 120px; }
+main { max-width: 1000px; margin: 0 auto; padding: 24px 20px 64px; display: flex; flex-direction: column; gap: 22px; }
+h1, h2, h3 { margin: 0; line-height: 1.2; }
+h1 { font-size: 32px; }
+h2 { font-size: 24px; }
+h3 { font-size: 20px; }
+p { margin: 0; }
+.muted { color: var(--muted); }
+.small { font-size: 13px; }
+.eyebrow { font-size: 12px; font-weight: 700; letter-spacing: .12em; color: var(--accent); text-transform: uppercase; }
+.card { background: var(--surface); border-radius: 20px; padding: 22px; }
+.back { align-self: flex-start; border: 0; background: none; color: var(--accent); font-weight: 600; padding: 0; }
+.hero { background: var(--forest); color: var(--on-forest); border-radius: 24px; padding: 30px; display: flex; flex-direction: column; gap: 18px; }
+.hero .eyebrow { color: var(--lime); }
+.hero h1 { font-size: 40px; }
+.hero p { opacity: .85; max-width: 640px; }
+.stats { display: flex; gap: 24px; flex-wrap: wrap; font-weight: 600; }
+.chips { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 2px; scrollbar-width: none; }
+.chips::-webkit-scrollbar { display: none; }
+.chip { border: 0; background: var(--surface); padding: 11px 18px; border-radius: 999px; font-size: 15px; font-weight: 500; white-space: nowrap; }
+.chip[aria-pressed="true"] { background: var(--forest); color: var(--on-forest); }
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
+.course { display: flex; flex-direction: column; gap: 14px; text-align: left; border: 0; width: 100%; }
+.course:hover, .term-open:hover, .list-item:hover { outline: 2px solid var(--line); }
+.course .row { display: flex; justify-content: space-between; align-items: center; }
+.icon { width: 48px; height: 48px; border-radius: 13px; background: var(--tint); color: var(--accent); display: grid; place-items: center; font-size: 24px; }
+.bar { height: 6px; border-radius: 3px; background: var(--tint); overflow: hidden; }
+.bar > span { display: block; height: 100%; background: var(--accent); transition: width .3s; }
+.cta { display: flex; justify-content: space-between; color: var(--accent); font-weight: 700; font-size: 15px; }
+.banner { display: flex; align-items: center; gap: 16px; border: 0; width: 100%; text-align: left; background: var(--tint); border-radius: 18px; padding: 20px; }
+.banner .big { font-size: 30px; }
+.notice { display: flex; gap: 10px; background: var(--tint); border-radius: 14px; padding: 16px; font-size: 14px; color: var(--muted); }
+.split { display: grid; grid-template-columns: 220px 1fr; gap: 24px; align-items: start; }
+.route { display: flex; flex-direction: column; gap: 14px; }
+.route li { display: flex; gap: 10px; font-size: 13px; color: var(--muted); list-style: none; }
+.route ul { margin: 0; padding: 0; display: flex; flex-direction: column; gap: 12px; }
+.route .dot { flex: none; width: 18px; height: 18px; border-radius: 50%; border: 2px solid var(--muted); display: grid; place-items: center; font-size: 11px; color: var(--on-forest); }
+.route .done .dot { background: var(--accent); border-color: var(--accent); }
+.route .now .dot { border-color: var(--accent); background: var(--accent); }
+.route .now { color: var(--text); font-weight: 600; }
+.question { display: flex; flex-direction: column; gap: 20px; }
+.options { display: flex; flex-direction: column; gap: 12px; }
+.option {
+  display: flex; align-items: center; gap: 14px; text-align: left; padding: 18px; border-radius: 14px;
+  background: var(--bg); border: 1px solid var(--line); font-weight: 600;
+}
+.option:hover:not(:disabled) { border-color: var(--accent); }
+.option .letter { flex: none; width: 32px; height: 32px; border-radius: 8px; background: var(--tint); display: grid; place-items: center; font-size: 13px; font-weight: 700; color: var(--accent); }
+.tags { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 8px; }
+.tag { border: 0; background: var(--tint); color: var(--accent); border-radius: 9px; padding: 10px 12px; font-size: 13px; font-weight: 600; text-align: left; }
+.code { background: var(--forest); color: var(--lime); border-radius: 12px; padding: 16px; font: 14px/1.5 ui-monospace, "SF Mono", Consolas, monospace; white-space: pre-wrap; overflow-x: auto; margin: 0; }
+.primary { border: 0; background: var(--forest); color: var(--on-forest); border-radius: 14px; padding: 14px 20px; font-weight: 700; width: 100%; }
+.primary:hover { filter: brightness(1.1); }
+.secondary { border: 1px solid var(--line); background: var(--tint); color: var(--accent); border-radius: 12px; padding: 10px 16px; font-weight: 600; }
+.danger { color: #d70015; }
+.center { text-align: center; align-items: center; }
+.seal { font-size: 64px; color: var(--accent); line-height: 1; }
+.term-card { display: flex; flex-direction: column; gap: 10px; }
+.term-card .row { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; }
+.term-open { border: 0; background: none; text-align: left; padding: 0; display: flex; flex-direction: column; gap: 8px; border-radius: 8px; }
+.star { border: 0; background: none; color: var(--accent); font-size: 22px; min-width: 44px; min-height: 44px; }
+.toolbar { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
+input[type="search"], input[type="text"], select, textarea {
+  font: inherit; color: var(--text); background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 11px 14px;
+}
+input[type="search"] { flex: 1; min-width: 220px; }
+textarea { width: 100%; min-height: 140px; resize: vertical; }
+.list { background: var(--surface); border-radius: 16px; overflow: hidden; }
+.list-item { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 16px 20px; border: 0; border-bottom: 1px solid var(--line); background: none; width: 100%; text-align: left; }
+.list-item:last-child { border-bottom: 0; }
+.list-title { padding: 6px 4px; font-size: 13px; color: var(--muted); text-transform: uppercase; letter-spacing: .04em; }
+.kv { display: flex; justify-content: space-between; padding: 14px 20px; border-bottom: 1px solid var(--line); }
+details summary { cursor: pointer; color: var(--accent); font-weight: 600; }
+.check { display: flex; justify-content: space-between; align-items: center; font-size: 15px; }
+.switch { position: relative; width: 51px; height: 31px; flex: none; }
+.switch input { opacity: 0; width: 100%; height: 100%; margin: 0; cursor: pointer; position: absolute; }
+.switch span { position: absolute; inset: 0; background: #c7c7cc; border-radius: 999px; transition: .2s; pointer-events: none; }
+.switch span::after { content: ""; position: absolute; top: 2px; left: 2px; width: 27px; height: 27px; border-radius: 50%; background: #fff; transition: .2s; box-shadow: 0 2px 4px rgba(0,0,0,.2); }
+.switch input:checked + span { background: #34c759; }
+.switch input:checked + span::after { transform: translateX(20px); }
+.overlay { position: fixed; inset: 0; z-index: 50; background: rgba(0,0,0,.4); display: flex; align-items: flex-end; justify-content: center; animation: fade .2s; }
+.sheet { background: var(--bg); width: min(680px, 100%); max-height: 92vh; overflow: auto; border-radius: 20px 20px 0 0; animation: rise .25s ease-out; }
+.sheet-head { position: sticky; top: 0; display: flex; justify-content: space-between; align-items: center; padding: 14px 20px; background: var(--bg); border-bottom: 1px solid var(--line); font-weight: 700; }
+.sheet-head button { border: 0; background: none; color: var(--accent); font-weight: 600; }
+.sheet-body { padding: 22px; display: flex; flex-direction: column; gap: 18px; }
+.fb-icon { font-size: 48px; line-height: 1; }
+.ok { color: var(--accent); }
+.ng { color: var(--warn); }
+.field { display: flex; flex-direction: column; gap: 6px; }
+.field label { font-size: 13px; color: var(--muted); }
+@keyframes rise { from { transform: translateY(40px); opacity: 0; } }
+@keyframes fade { from { opacity: 0; } }
+@media (min-width: 760px) { .overlay { align-items: center; } .sheet { border-radius: 20px; } }
+@media (max-width: 759px) {
+  .topbar { flex-wrap: wrap; padding: 10px 16px; }
+  .tabs { order: 3; width: 100%; justify-content: space-between; }
+  .tabs button { padding: 8px 10px; font-size: 14px; flex: 1; }
+  .spacer { display: none; }
+  main { padding: 20px 16px 48px; }
+  .split { grid-template-columns: 1fr; }
+  .split .route { display: none; }
+  .hero h1 { font-size: 30px; }
+}
+</style>
+</head>
+<body>
+<header class="topbar">
+  <div class="brand"><img src="icon.png" alt="">StepCraft</div>
+  <nav class="tabs" role="tablist" aria-label="Sections">
+    <button role="tab" data-tab="courses">Courses</button>
+    <button role="tab" data-tab="glossary">Glossary</button>
+    <button role="tab" data-tab="guides">Guides</button>
+    <button role="tab" data-tab="progress">Progress</button>
+  </nav>
+  <div class="spacer"></div>
+</header>
+<main id="app"></main>
+<div id="modal"></div>
+
+<script id="content" type="application/json">{"chapters":["PC & Operating Systems","Terminal & Bash","Common Bash Commands","Programming","Git & GitHub","Internet & APIs","Blockchain & Wallets","AI Agents & Stablecoins"],"important":["OS","Linux","Ubuntu","WSL","Directory","Path","Terminal","Bash","Command","Python","Library","Git","GitHub","Repository","API","JSON","Blockchain","Wallet","LLM","AI Agent"],"terms":[{"id":"0-0","name":"OS","full":"Operating System","description":"The basic software that manages a computer. Windows and Ubuntu are examples.","chapter":0},{"id":"0-1","name":"Windows","full":"Microsoft Windows","description":"Microsoft's operating system, widely used on personal computers.","chapter":0},{"id":"0-2","name":"Linux","full":"Linux","description":"A family of operating systems commonly used for servers and development.","chapter":0},{"id":"0-3","name":"Ubuntu","full":"Ubuntu","description":"A Linux distribution that packages Linux into a convenient operating system.","chapter":0},{"id":"0-4","name":"WSL","full":"Windows Subsystem for Linux","description":"A way to run a Linux environment inside Windows.","chapter":0},{"id":"0-5","name":"CPU","full":"Central Processing Unit","description":"The central processor that calculates results and executes instructions.","chapter":0},{"id":"0-6","name":"RAM","full":"Random Access Memory","description":"Temporary working memory for running programs and data.","chapter":0},{"id":"0-7","name":"SSD","full":"Solid State Drive","description":"A device that stores files and applications for the long term.","chapter":0},{"id":"0-8","name":"File","full":"File","description":"A unit of saved data, such as text, an image, or a program.","chapter":0},{"id":"0-9","name":"Directory","full":"Directory","description":"A container for files and other directories; commonly called a folder.","chapter":0},{"id":"0-10","name":"Path","full":"Path","description":"An address that identifies the location of a file or directory.","chapter":0},{"id":"0-11","name":"Root /","full":"Root Directory","description":"The top of the Linux directory tree.","chapter":0},{"id":"0-12","name":"Home ~","full":"Home Directory","description":"A user's own directory in Linux.","chapter":0},{"id":"0-13","name":"Current Directory","full":"Current Directory","description":"The directory you are currently working in.","chapter":0},{"id":"0-14","name":"Mount","full":"Mount","description":"Connecting a storage device or region to the directory tree so it can be accessed.","chapter":0},{"id":"0-15","name":"/mnt/c","full":"Mount + C Drive","description":"The Windows C drive as seen from Ubuntu in WSL. C:\\Users\\Owner becomes /mnt/c/Users/Owner.","chapter":0},{"id":"1-0","name":"Terminal","full":"Terminal","description":"An app or screen for typing commands and viewing their results.","chapter":1},{"id":"1-1","name":"Shell","full":"Shell","description":"Software that interprets commands and passes instructions to the operating system.","chapter":1},{"id":"1-2","name":"Bash","full":"Bourne Again SHell","description":"A widely used command shell on Linux.","chapter":1},{"id":"1-3","name":"Command","full":"Command","description":"An instruction that asks a computer to perform an action.","chapter":1},{"id":"1-4","name":"CLI","full":"Command Line Interface","description":"An interface operated by typing text commands.","chapter":1},{"id":"1-5","name":"GUI","full":"Graphical User Interface","description":"An interface operated through visual elements such as buttons and icons.","chapter":1},{"id":"1-6","name":"Prompt (Terminal)","full":"Prompt (Terminal)","description":"A display that indicates the terminal is waiting for a command.","chapter":1},{"id":"1-7","name":"Option","full":"Option","description":"An extra setting that changes a command's behavior, such as -l in ls -l.","chapter":1},{"id":"1-8","name":"Argument","full":"Argument","description":"A value or target passed to a command, such as Documents in cd Documents.","chapter":1},{"id":"1-9","name":"Standard Output","full":"Standard Output","description":"The output channel for a command's normal results.","chapter":1},{"id":"1-10","name":"Standard Error","full":"Standard Error","description":"The output channel for error messages.","chapter":1},{"id":"2-0","name":"pwd","full":"Print Working Directory","description":"Displays the path of the current working directory.","chapter":2},{"id":"2-1","name":"ls","full":"List","description":"Lists files and directories.","chapter":2},{"id":"2-2","name":"cd","full":"Change Directory","description":"Changes the current directory.","chapter":2},{"id":"2-3","name":"mkdir","full":"Make Directory","description":"Creates a new directory.","chapter":2},{"id":"2-4","name":"touch","full":"Touch","description":"Updates file timestamps; also commonly used to create an empty file.","chapter":2},{"id":"2-5","name":"cp","full":"Copy","description":"Copies files or directories.","chapter":2},{"id":"2-6","name":"mv","full":"Move","description":"Moves or renames files and directories.","chapter":2},{"id":"2-7","name":"rm","full":"Remove","description":"Removes files or directories. Check the target before using it.","chapter":2},{"id":"2-8","name":"cat","full":"Concatenate","description":"Combines file contents; often used to display a file in the terminal.","chapter":2},{"id":"2-9","name":"less","full":"Less","description":"Lets you read long text one screen at a time.","chapter":2},{"id":"2-10","name":"clear","full":"Clear","description":"Clears the terminal display.","chapter":2},{"id":"2-11","name":"echo","full":"Echo","description":"Displays text or variable values.","chapter":2},{"id":"2-12","name":"which","full":"Which","description":"Locates the executable used for a command.","chapter":2},{"id":"2-13","name":"sudo","full":"Superuser Do","description":"Runs a command with elevated privileges, subject to authorization.","chapter":2},{"id":"2-14","name":"apt","full":"Advanced Package Tool","description":"Ubuntu's tool for finding, installing, updating, and removing software packages.","chapter":2},{"id":"3-0","name":"Program","full":"Program","description":"Instructions describing what a computer should do.","chapter":3},{"id":"3-1","name":"Code","full":"Code","description":"The written instructions that make up a program.","chapter":3},{"id":"3-2","name":"Programming Language","full":"Programming Language","description":"A language used to write programs.","chapter":3},{"id":"3-3","name":"Python","full":"Python","description":"A readable programming language widely used for AI and automation.","chapter":3},{"id":"3-4","name":"Script","full":"Script","description":"A program often used for smaller tasks or automation.","chapter":3},{"id":"3-5","name":"Variable","full":"Variable","description":"A named place to hold a value.","chapter":3},{"id":"3-6","name":"Function","full":"Function","description":"A reusable group of instructions with a name.","chapter":3},{"id":"3-7","name":"Class","full":"Class","description":"A blueprint for grouping data and behavior.","chapter":3},{"id":"3-8","name":"Library","full":"Library","description":"A collection of reusable software components.","chapter":3},{"id":"3-9","name":"Package","full":"Package","description":"A unit containing related software or libraries.","chapter":3},{"id":"3-10","name":"Framework","full":"Framework","description":"A foundation that provides structure and tools for building applications.","chapter":3},{"id":"3-11","name":"pip","full":"Pip Installs Packages","description":"A tool for installing and managing Python packages.","chapter":3},{"id":"3-12","name":"Virtual Environment","full":"Virtual Environment","description":"An isolated environment for managing a project's Python packages.","chapter":3},{"id":"3-13","name":"Dependency","full":"Dependency","description":"Software or libraries required by another program.","chapter":3},{"id":"3-14","name":"Bug","full":"Bug","description":"An error in a program that causes unintended behavior.","chapter":3},{"id":"3-15","name":"Debug","full":"Debug","description":"Finding and fixing the causes of bugs.","chapter":3},{"id":"3-16","name":"Syntax","full":"Syntax","description":"The rules for writing a programming language.","chapter":3},{"id":"3-17","name":"Runtime","full":"Runtime","description":"The environment in which a program executes.","chapter":3},{"id":"4-0","name":"Git","full":"Git","description":"A version control system for recording and managing file changes.","chapter":4},{"id":"4-1","name":"GitHub","full":"GitHub","description":"A service for hosting Git repositories and collaborating on code.","chapter":4},{"id":"4-2","name":"Repository","full":"Repository","description":"A place containing a project's files and change history; also called a repo.","chapter":4},{"id":"4-3","name":"Local","full":"Local","description":"An environment or data on your own computer.","chapter":4},{"id":"4-4","name":"Remote","full":"Remote","description":"A repository or environment accessed over a network.","chapter":4},{"id":"4-5","name":"Commit","full":"Commit","description":"A recorded set of changes in version control.","chapter":4},{"id":"4-6","name":"Branch","full":"Branch","description":"A separate line of development in a repository's history.","chapter":4},{"id":"4-7","name":"Clone","full":"Clone","description":"Copies a remote repository to your computer.","chapter":4},{"id":"4-8","name":"Pull","full":"Pull","description":"Brings remote changes into your local repository and integrates them.","chapter":4},{"id":"4-9","name":"Push","full":"Push","description":"Sends local commits to a remote repository.","chapter":4},{"id":"4-10","name":"Merge","full":"Merge","description":"Combines different lines of development.","chapter":4},{"id":"4-11","name":"Pull Request","full":"Pull Request","description":"A proposal to review and integrate changes into another branch.","chapter":4},{"id":"4-12","name":"Conflict","full":"Conflict","description":"Changes that Git cannot automatically combine because they conflict.","chapter":4},{"id":"4-13","name":".gitignore","full":".gitignore","description":"A file specifying paths that Git should ignore when they are not already tracked.","chapter":4},{"id":"5-0","name":"Internet","full":"Internet","description":"The worldwide system connecting computers and networks.","chapter":5},{"id":"5-1","name":"Web","full":"World Wide Web","description":"A system for accessing linked pages and information over the internet.","chapter":5},{"id":"5-2","name":"Browser","full":"Browser","description":"An application for viewing and interacting with web pages.","chapter":5},{"id":"5-3","name":"Server","full":"Server","description":"A computer or program that provides data or services to other computers.","chapter":5},{"id":"5-4","name":"Client","full":"Client","description":"The side that requests and uses a server's data or services.","chapter":5},{"id":"5-5","name":"URL","full":"Uniform Resource Locator","description":"An address identifying a resource such as a web page or API.","chapter":5},{"id":"5-6","name":"Domain","full":"Domain","description":"A readable internet name such as example.com.","chapter":5},{"id":"5-7","name":"IP Address","full":"IP Address","description":"A numeric address used to identify a network interface.","chapter":5},{"id":"5-8","name":"HTTP","full":"Hypertext Transfer Protocol","description":"A protocol for exchanging web requests and responses.","chapter":5},{"id":"5-9","name":"HTTPS","full":"HTTP Secure","description":"HTTP protected by encrypted transport.","chapter":5},{"id":"5-10","name":"API","full":"Application Programming Interface","description":"A defined interface for using another program's data or functions.","chapter":5},{"id":"5-11","name":"Request","full":"Request","description":"A request sent by a client to a server.","chapter":5},{"id":"5-12","name":"Response","full":"Response","description":"The result a server returns to a client.","chapter":5},{"id":"5-13","name":"Endpoint","full":"Endpoint","description":"An address for a specific API function or resource.","chapter":5},{"id":"5-14","name":"JSON","full":"JavaScript Object Notation","description":"A text format commonly used to exchange structured data.","chapter":5},{"id":"5-15","name":"API Key","full":"API Key","description":"A secret credential used to identify or authorize an API client. Do not publish it.","chapter":5},{"id":"5-16","name":"Authentication","full":"Authentication","description":"Checking that a user or client is who they claim to be.","chapter":5},{"id":"5-17","name":"Token (Authentication)","full":"Token (Authentication)","description":"A string representing authentication or access permission.","chapter":5},{"id":"5-18","name":"Environment Variable","full":"Environment Variable","description":"A named configuration value supplied outside the program's source code.","chapter":5},{"id":"6-0","name":"Blockchain","full":"Blockchain","description":"A shared ledger maintained by multiple participants to make unauthorized changes difficult.","chapter":6},{"id":"6-1","name":"Block","full":"Block","description":"A group of records bundled together in a blockchain.","chapter":6},{"id":"6-2","name":"Transaction","full":"Transaction","description":"A recorded transfer or operation on a blockchain.","chapter":6},{"id":"6-3","name":"Cryptocurrency","full":"Cryptocurrency","description":"A digital asset issued and transferred using cryptographic systems such as blockchains.","chapter":6},{"id":"6-4","name":"Wallet","full":"Wallet","description":"A tool that manages keys used to control assets. The assets remain on the blockchain.","chapter":6},{"id":"6-5","name":"Wallet Address","full":"Wallet Address","description":"A public destination used to receive assets or identify an account.","chapter":6},{"id":"6-6","name":"Public Key","full":"Public Key","description":"A shareable key paired with a private key.","chapter":6},{"id":"6-7","name":"Private Key","full":"Private Key","description":"A secret key that authorizes operations. Never share it with others.","chapter":6},{"id":"6-8","name":"Seed Phrase","full":"Seed Phrase","description":"A sequence of words used to restore a wallet. Protect it like a private key.","chapter":6},{"id":"6-9","name":"Gas Fee","full":"Gas Fee","description":"A fee paid to execute transactions or operations on a blockchain.","chapter":6},{"id":"6-10","name":"Smart Contract","full":"Smart Contract","description":"A program that executes rules on a blockchain.","chapter":6},{"id":"6-11","name":"DApp","full":"Decentralized Application","description":"An application that uses a blockchain or smart contracts.","chapter":6},{"id":"6-12","name":"Mainnet","full":"Mainnet","description":"A production blockchain where assets can have real value.","chapter":6},{"id":"6-13","name":"Testnet","full":"Testnet","description":"A blockchain network for testing and development.","chapter":6},{"id":"7-0","name":"AI","full":"Artificial Intelligence","description":"Technologies that let computers perform some tasks associated with human intelligence.","chapter":7},{"id":"7-1","name":"Machine Learning","full":"Machine Learning","description":"AI methods that learn patterns from data for predictions or classification.","chapter":7},{"id":"7-2","name":"Generative AI","full":"Generative AI","description":"AI that generates content such as text, images, audio, or code.","chapter":7},{"id":"7-3","name":"LLM","full":"Large Language Model","description":"A large language model trained on extensive text to process and generate language.","chapter":7},{"id":"7-4","name":"Prompt (AI)","full":"Prompt (AI)","description":"Instructions, questions, or background information given to an AI.","chapter":7},{"id":"7-5","name":"Token (AI)","full":"Token (AI)","description":"A small unit of text used by an AI model; it may be a word or part of a word.","chapter":7},{"id":"7-6","name":"Context","full":"Context","description":"Information such as conversation history or documents available to a model.","chapter":7},{"id":"7-7","name":"Inference","full":"Inference","description":"Using a trained model to produce an output from an input.","chapter":7},{"id":"7-8","name":"AI Agent","full":"AI Agent","description":"An AI system that works toward a goal through multiple steps and tools.","chapter":7},{"id":"7-9","name":"Tool","full":"Tool","description":"A function an AI agent can call, such as search, calculation, or file access.","chapter":7},{"id":"7-10","name":"Workflow","full":"Workflow","description":"The sequence of tasks or operations in a process.","chapter":7},{"id":"7-11","name":"Automation","full":"Automation","description":"Using software to perform repeated work automatically.","chapter":7},{"id":"7-12","name":"Stablecoin","full":"Stablecoin","description":"A crypto asset designed to track a reference value, such as a fiat currency.","chapter":7},{"id":"7-13","name":"Fiat Currency","full":"Fiat Currency","description":"A currency issued under a government's monetary system, such as yen or US dollars.","chapter":7},{"id":"7-14","name":"Peg","full":"Peg","description":"A mechanism intended to keep an asset's value linked to a reference value.","chapter":7},{"id":"7-15","name":"Reserve","full":"Reserve","description":"Assets held to support a stablecoin's value or redemption.","chapter":7},{"id":"7-16","name":"DeFi","full":"Decentralized Finance","description":"Financial services provided through blockchain systems.","chapter":7},{"id":"extra-0","name":"Solana","full":"Solana","description":"The blockchain used in this app's token issuance lessons.","chapter":6},{"id":"extra-1","name":"Devnet","full":"Development Network","description":"Solana's development network for learning and testing without production assets.","chapter":6},{"id":"extra-2","name":"Mint","full":"Mint account","description":"A Solana account that defines a token type and records information such as its issuance authority.","chapter":6},{"id":"extra-3","name":"Token (Asset)","full":"Blockchain Token","description":"A unit of an asset issued and transferred on a blockchain; distinct from AI or authentication tokens.","chapter":6},{"id":"extra-4","name":"VS Code","full":"Visual Studio Code","description":"A code editor that can open projects inside WSL.","chapter":3},{"id":"extra-5","name":"Rust","full":"Rust","description":"A programming language also used to develop Solana programs.","chapter":3},{"id":"extra-6","name":"Anchor","full":"Anchor framework","description":"A framework that helps developers build Solana programs.","chapter":3},{"id":"extra-7","name":"Deploy","full":"Deploy","description":"Placing an application or program into an environment where it can be used.","chapter":3},{"id":"extra-8","name":"FastAPI","full":"FastAPI","description":"A Python framework for building APIs.","chapter":3},{"id":"extra-9","name":"Reels","full":"Reels","description":"Instagram's video posting format.","chapter":5}],"courses":[{"id":"solana-token","category":"Blockchain","icon":"◈","title":"Issue a Solana token","description":"From Windows setup to token issuance and balance checks on Devnet.","time":"15 min","tag":"Beginner","steps":[{"title":"Set up Linux on Windows","question":"How do you use this course's Linux development tools on Windows?","options":["Install WSL","Choose Ethereum","Install an image editor","Choose Bitcoin"],"answer":0,"explanation":"This course follows a Windows workflow using WSL to run Linux inside Windows.","wrong":"Choosing a blockchain or an image editor does not set up Linux. Start with the development environment.","terms":["Windows","WSL","Linux"],"code":"wsl --install","source":"wsl","id":"solana-token-0"},{"title":"Start Ubuntu","question":"Which Linux distribution will you use inside WSL?","options":["GitHub","Ubuntu","Solana","VS Code"],"answer":1,"explanation":"Start Ubuntu and create a Linux username and password on first launch. Windows may need a restart after installing WSL.","wrong":"Ubuntu is an OS environment, GitHub hosts code, VS Code edits code, and Solana is a blockchain. They have different roles.","terms":["Ubuntu","OS","Bash"],"code":"","source":"wsl","id":"solana-token-1"},{"title":"Choose a code editor","question":"Which tool edits the Ubuntu project in this course?","options":["Bitcoin","VS Code with the WSL extension","A wallet alone","YouTube Studio"],"answer":1,"explanation":"Open the Ubuntu project using VS Code and its WSL extension. This is our chosen editor; other editors can also be used.","wrong":"Blockchains and publishing tools do not replace a code editor.","terms":["VS Code","Directory","Code"],"code":"","source":"solana","id":"solana-token-2"},{"title":"Choose the target blockchain","question":"This course creates Solana tokens or programs. Which chain should you use?","options":["Ethereum","Bitcoin","Solana","Mix blockchains"],"answer":2,"explanation":"This workflow uses Solana. Chains differ in execution environments, tools, and address formats.","wrong":"Ethereum and Bitcoin serve other purposes, but their workflows are not interchangeable with this Solana course. Choose Solana to continue.","terms":["Solana","Blockchain"],"code":"","source":"solana","id":"solana-token-3"},{"title":"Prepare the Solana tools","question":"Which tools handle Solana configuration and token issuance?","options":["Solana CLI and SPL Token CLI","Bitcoin Core alone","A Solidity compiler alone","pip alone"],"answer":0,"explanation":"Use Solana CLI for network and key configuration, and SPL Token CLI for token operations. Follow the official installation guide.","wrong":"Tools for another chain or a Python package manager alone cannot perform this course's token operations.","terms":["CLI","Solana","Dependency"],"code":"solana --version\nspl-token --version","source":"solana","id":"solana-token-4"},{"title":"Select a development network","question":"Which network should you use for your first test?","options":["Start on Mainnet","Devnet","No network is needed","Ethereum Mainnet"],"answer":1,"explanation":"Devnet is Solana's development network. After setting it, check the endpoint with solana config get.","wrong":"Test in a development environment before using production assets. A different chain's network does not fit this workflow.","terms":["Devnet","Mainnet","Testnet"],"code":"solana config set --url devnet\nsolana config get","source":"token","id":"solana-token-5"},{"title":"Prepare a development wallet","question":"What do you need before sending Devnet transactions?","options":["Post a private key on social media","Dedicated keys and test SOL","Share a production seed phrase","Use GitHub as a wallet"],"answer":1,"explanation":"Create dedicated development keys locally and obtain test SOL. Never enter private keys or seed phrases into this app.","wrong":"Publicly sharing a private key exposes control of the account. GitHub is not a wallet. Development keys and test SOL for fees are needed.","terms":["Wallet","Private Key","Seed Phrase","Gas Fee"],"code":"solana-keygen new\nsolana airdrop 2\nsolana balance","source":"token","id":"solana-token-6"},{"title":"Create a token mint","question":"With SPL Token CLI ready, how do you define a new token type?","options":["Transfer tokens first","Create a mint","Always deploy a custom program","Connect to Ethereum"],"answer":1,"explanation":"Create a mint account and keep its address. Issuing a standard token through the Token Program does not require deploying your own program.","wrong":"A token type must exist before transfers. Standard token issuance and custom program deployment are different tasks.","terms":["Mint","Token (Asset)","Smart Contract"],"code":"spl-token create-token","source":"token","id":"solana-token-7"},{"title":"Create an account and mint tokens","question":"After creating the mint, how do you receive newly issued tokens?","options":["Delete the mint address","Create a token account and mint","Publish the seed phrase","Rename SOL"],"answer":1,"explanation":"Create a token account and mint using a key with issuance authority. Replace the angle-bracket placeholder with the actual mint address.","wrong":"Creating a mint does not issue a quantity of tokens. You need a receiving account and a mint operation.","terms":["Mint","Wallet Address","Transaction"],"code":"spl-token create-account <MINT_ADDRESS>\nspl-token mint <MINT_ADDRESS> 100","source":"token","id":"solana-token-8"},{"title":"Verify the result","question":"What should you check at the end?","options":["Social media reactions only","Devnet balance and transaction results","Assume it is production","Publish a private key"],"answer":1,"explanation":"Check balances, the mint, and transactions using the CLI or a Devnet explorer. Production release requires separate decisions about authority, supply, and key management.","wrong":"Verify the result on the chain. Devnet tokens must not be represented as production assets.","terms":["Transaction","Devnet"],"code":"spl-token balance <MINT_ADDRESS>","source":"token","id":"solana-token-9"}]},{"id":"solana-program","category":"Blockchain","icon":"⌘","title":"Deploy a Solana program","description":"Implement, test, and deploy with Rust and Anchor.","time":"12 min","tag":"Next step","steps":[{"title":"Set up Linux on Windows","question":"How do you use this course's Linux development tools on Windows?","options":["Install WSL","Choose Ethereum","Install an image editor","Choose Bitcoin"],"answer":0,"explanation":"This course follows a Windows workflow using WSL to run Linux inside Windows.","wrong":"Choosing a blockchain or an image editor does not set up Linux. Start with the development environment.","terms":["Windows","WSL","Linux"],"code":"wsl --install","source":"wsl","id":"solana-program-0"},{"title":"Start Ubuntu","question":"Which Linux distribution will you use inside WSL?","options":["GitHub","Ubuntu","Solana","VS Code"],"answer":1,"explanation":"Start Ubuntu and create a Linux username and password on first launch. Windows may need a restart after installing WSL.","wrong":"Ubuntu is an OS environment, GitHub hosts code, VS Code edits code, and Solana is a blockchain. They have different roles.","terms":["Ubuntu","OS","Bash"],"code":"","source":"wsl","id":"solana-program-1"},{"title":"Choose a code editor","question":"Which tool edits the Ubuntu project in this course?","options":["Bitcoin","VS Code with the WSL extension","A wallet alone","YouTube Studio"],"answer":1,"explanation":"Open the Ubuntu project using VS Code and its WSL extension. This is our chosen editor; other editors can also be used.","wrong":"Blockchains and publishing tools do not replace a code editor.","terms":["VS Code","Directory","Code"],"code":"","source":"solana","id":"solana-program-2"},{"title":"Choose the target blockchain","question":"This course creates Solana tokens or programs. Which chain should you use?","options":["Ethereum","Bitcoin","Solana","Mix blockchains"],"answer":2,"explanation":"This workflow uses Solana. Chains differ in execution environments, tools, and address formats.","wrong":"Ethereum and Bitcoin serve other purposes, but their workflows are not interchangeable with this Solana course. Choose Solana to continue.","terms":["Solana","Blockchain"],"code":"","source":"solana","id":"solana-program-3"},{"title":"Prepare program development tools","question":"Which stack does this Solana program course use?","options":["Rust, Solana CLI, and Anchor","Only Solidity and Ethereum","Excel alone","A video editor"],"answer":0,"explanation":"This course uses Rust and Anchor. Anchor helps with Solana program development but is not mandatory for every Solana project.","wrong":"Tools for another chain or spreadsheets alone cannot build and deploy this program.","terms":["Rust","Anchor","Framework"],"code":"rustc --version\nsolana --version\nanchor --version","source":"solana","id":"solana-program-4"},{"title":"Select a development network","question":"Which network should you use for your first test?","options":["Start on Mainnet","Devnet","No network is needed","Ethereum Mainnet"],"answer":1,"explanation":"Devnet is Solana's development network. After setting it, check the endpoint with solana config get.","wrong":"Test in a development environment before using production assets. A different chain's network does not fit this workflow.","terms":["Devnet","Mainnet","Testnet"],"code":"solana config set --url devnet\nsolana config get","source":"token","id":"solana-program-5"},{"title":"Prepare a development wallet","question":"What do you need before sending Devnet transactions?","options":["Post a private key on social media","Dedicated keys and test SOL","Share a production seed phrase","Use GitHub as a wallet"],"answer":1,"explanation":"Create dedicated development keys locally and obtain test SOL. Never enter private keys or seed phrases into this app.","wrong":"Publicly sharing a private key exposes control of the account. GitHub is not a wallet. Development keys and test SOL for fees are needed.","terms":["Wallet","Private Key","Seed Phrase","Gas Fee"],"code":"solana-keygen new\nsolana airdrop 2\nsolana balance","source":"token","id":"solana-program-6"},{"title":"Implement and build","question":"With the environment and keys ready, what comes next?","options":["Implement in Rust and build","Publish without implementation","Switch to Bitcoin","Embed private keys in source"],"answer":0,"explanation":"Create an Anchor project, implement its behavior, and run anchor build. The example project is named my_program.","wrong":"You need a program to deploy. Implement and build it without placing secret keys in the source.","terms":["Code","Rust","Program"],"code":"anchor init my_program\ncd my_program\nanchor build","source":"program","id":"solana-program-7"},{"title":"Test locally","question":"What should happen before deploying to Devnet?","options":["Skip verification","Run tests and check configuration","Switch to Mainnet","Delete all logs"],"answer":1,"explanation":"Test locally and check the program ID, wallet, and network configuration. Anchor.toml affects the test target, so distinguish local testing from Devnet deployment.","wrong":"A successful build does not guarantee correct behavior. Test the program and verify the deployment target.","terms":["Debug","Local","Bug"],"code":"anchor test","source":"program","id":"solana-program-8"},{"title":"Deploy and verify on Devnet","question":"After testing, which sequence completes the workflow?","options":["Deploy to Devnet, then check the program ID","Deploy unchanged to another chain","Issue a token only","Post code on social media"],"answer":0,"explanation":"Configure Anchor for Devnet, deploy, and check the program ID. Also test calling the deployed program.","wrong":"Deploying a program is different from issuing a token through the Token Program. Programs cannot simply be deployed unchanged to another chain.","terms":["Deploy","Program","Devnet"],"code":"anchor deploy --provider.cluster devnet\nsolana program show <PROGRAM_ID> --url devnet","source":"program","id":"solana-program-9"}]},{"id":"ai-api","category":"AI & Development","icon":"✳","title":"Build and publish an AI app","description":"Learn a Python API workflow and prepare for a secure release.","time":"10 min","tag":"Beginner","steps":[{"title":"Define the goal","question":"What should you define first?","options":["Users, inputs, and expected outputs","A public URL immediately","How to publish the API key","An unrelated chain"],"answer":0,"explanation":"For a text classification app, define the input text and expected categories. This course shows one Python API workflow.","wrong":"Defining the goal first helps you choose features and verification methods.","terms":["AI","Workflow"],"code":"","source":"","id":"ai-api-0"},{"title":"Isolate the Python environment","question":"How should you manage project dependencies?","options":["Create a virtual environment","Publish every setting","Delete the OS","Prepare a wallet"],"answer":0,"explanation":"Create a Python virtual environment to isolate packages for the project. The example command is for Ubuntu and Bash.","wrong":"Virtual environments reduce package conflicts. A wallet is not needed for this step.","terms":["Python","Virtual Environment","pip"],"code":"python3 -m venv .venv\nsource .venv/bin/activate","source":"","id":"ai-api-1"},{"title":"Implement the API","question":"Which combination receives input and returns AI results?","options":["FastAPI and AI processing","Bitcoin alone","Only save images","Only write a GitHub description"],"answer":0,"explanation":"Define inputs and outputs with FastAPI and implement calls to a model or an external AI API. Choose the AI service for your goal.","wrong":"Saving files or writing a description does not implement input processing.","terms":["FastAPI","API","Inference"],"code":"","source":"ai","id":"ai-api-2"},{"title":"Keep credentials separate","question":"Where should an external API key be stored?","options":["Code sent to the browser","Server environment variables","A public GitHub README","A social media profile"],"answer":1,"explanation":"Handle the key on the server and supply it through hosting configuration. If you use .env, exclude it from Git.","wrong":"Visitors can retrieve keys included in browser code or public repositories.","terms":["API Key","Environment Variable",".gitignore"],"code":"","source":"","id":"ai-api-3"},{"title":"Test the behavior","question":"What should you check before publishing?","options":["Valid input, invalid input, and failures","One successful run is enough","Log secret keys","Ignore all errors"],"answer":0,"explanation":"Test expected responses, empty input, and API failures. Also check usage limits and costs for the service.","wrong":"Inputs and external APIs can fail. Implement responses for those situations too.","terms":["Debug","Request","Response"],"code":"","source":"","id":"ai-api-4"},{"title":"Deploy and verify","question":"What completes publication?","options":["Deploy to a suitable host and check HTTPS","Only rename a file","Publish the API key","Delete Git history"],"answer":0,"explanation":"Provide dependencies and startup settings to a Python-compatible host, configure environment variables, and test the public URL. Exact steps depend on the host.","wrong":"Local behavior and hosted behavior differ. Verify the runtime, secrets configuration, and public connection.","terms":["Deploy","HTTPS","Server"],"code":"","source":"ai","id":"ai-api-5"}]},{"id":"youtube","category":"Social & Publishing","icon":"▷","title":"Publish a YouTube video","description":"Prepare a video, configure details, and verify visibility.","time":"6 min","tag":"Beginner","steps":[{"title":"Prepare the video","question":"What do you need before uploading?","options":["A video file with usage rights checked","An audio file alone","An API key alone","A private key"],"answer":0,"explanation":"Prepare the final video and check rights for images and music. An audio-only file cannot be uploaded directly as a YouTube video.","wrong":"This workflow needs a video file. Check rights for the included material.","terms":["File"],"code":"","source":"youtube","id":"youtube-0"},{"title":"Open the upload page","question":"Where do you upload a video on a PC?","options":["YouTube Studio: Create, then Upload videos","GitHub Push","An Instagram profile","Solana CLI"],"answer":0,"explanation":"Sign into the channel's account, open YouTube Studio, and select the video on the upload page. Interface labels can change.","wrong":"Code management and other services do not perform this upload workflow.","terms":["Browser","Authentication"],"code":"","source":"youtube","id":"youtube-1"},{"title":"Set video details","question":"Which settings describe the video?","options":["Title and description","A wallet seed phrase","Only a Linux path","An API key"],"answer":0,"explanation":"Enter the title and description, set a thumbnail if needed, and configure the audience setting.","wrong":"This is for describing the video and its intended audience, not entering secrets.","terms":["Client"],"code":"","source":"youtube","id":"youtube-2"},{"title":"Check visibility","question":"What should you review after uploading?","options":["Checks and visibility","Publish immediately without review","Share private keys","Switch blockchains"],"answer":0,"explanation":"Review processing and checks, then choose Public, Unlisted, or Private for your goal. Available options can vary by account.","wrong":"An upload alone does not guarantee the intended visibility. Review settings and checks.","terms":["Workflow"],"code":"","source":"youtube","id":"youtube-3"},{"title":"Verify publication","question":"What should you check last?","options":["Video URL, playback, and visibility","Reset the PC","Build code","Issue production tokens"],"answer":0,"explanation":"Finish saving or publishing, then check the URL, playback, and visibility. Answering correctly here does not actually publish to YouTube.","wrong":"Verify the real publication result on YouTube.","terms":["URL"],"code":"","source":"youtube","id":"youtube-4"}]},{"id":"instagram","category":"Social & Publishing","icon":"◎","title":"Post an Instagram Reel","description":"Select a video on mobile, edit it, add a caption, and share.","time":"5 min","tag":"Beginner","steps":[{"title":"Prepare your media","question":"What do you need before creating a Reel?","options":["A video with usage rights checked","A Bitcoin private key","Python alone","A Git commit alone"],"answer":0,"explanation":"This course follows a basic mobile workflow. Prepare your own video or material you have permission to use.","wrong":"Prepare the media and check usage rights before opening the posting screen.","terms":["File","Reels"],"code":"","source":"instagram","id":"instagram-0"},{"title":"Open Reel creation","question":"Which Instagram feature should you use?","options":["Create a new Reel","YouTube Studio","Solana CLI","Ubuntu apt"],"answer":0,"explanation":"Choose Reel from Instagram's creation options. Button positions and options may vary by app version or account.","wrong":"Use the Reel creation screen inside Instagram, not another service.","terms":["Reels","GUI"],"code":"","source":"instagram","id":"instagram-1"},{"title":"Select and edit the video","question":"What is the next sequence?","options":["Select the video, then edit as needed","Attach a private key","Paste an API key","Switch to Ethereum"],"answer":0,"explanation":"Select a video from the device and adjust its length or presentation. Music rights and available tools can vary by account.","wrong":"This step selects the footage. Secrets and blockchain choices are unnecessary.","terms":["File"],"code":"","source":"instagram","id":"instagram-2"},{"title":"Review the caption and audience","question":"What should you check before sharing?","options":["Cover, caption, and audience","Paste a password in the caption","Skip all review","Only compile code"],"answer":0,"explanation":"Set a cover and caption, then review the destination and audience using the options shown in the app.","wrong":"Review presentation and audience before sharing. Never publish a password.","terms":["Authentication"],"code":"","source":"instagram","id":"instagram-3"},{"title":"Share and verify","question":"What is the final action?","options":["Share, then check the profile","Delete the video before sharing","Push code","Publish a seed phrase"],"answer":0,"explanation":"After sharing, check the post and playback on the profile or other relevant screen. This app teaches the steps; it does not post to Instagram.","wrong":"Distinguish completing the lesson from publishing a real post. Check the result on Instagram.","terms":["Workflow","Reels"],"code":"","source":"instagram","id":"instagram-4"}]}],"sources":{"wsl":["Microsoft / WSL","https://learn.microsoft.com/en-us/windows/wsl/install"],"solana":["Solana / Installation","https://solana.com/docs/intro/installation"],"token":["Solana / Token issuance","https://solana.com/docs/tokens/quickstart"],"program":["Solana / Program deployment","https://solana.com/docs/programs/deploying"],"ai":["FastAPI / Deployment","https://fastapi.tiangolo.com/deployment/"],"youtube":["YouTube / Upload videos","https://support.google.com/youtube/answer/57407?hl=en"],"instagram":["Instagram Help Center","https://help.instagram.com/"]},"glossaryDate":"2026-09-04","referenceDate":"2026-10-10"}</script>
+<script>
+"use strict";
+const C = JSON.parse(document.getElementById("content").textContent);
+const KEY = "stepcraft.web.english.v1";
+const ICONS = { "solana-token": "◈", "solana-program": "⌘", "ai-api": "✳", "youtube": "▷", "instagram": "◎" };
+const CATEGORIES = ["All", "Blockchain", "AI & Development", "Social & Publishing"];
+
+const esc = s => String(s).replace(/[&<>"']/g, ch => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[ch]));
+const pad = n => String(n).padStart(2, "0");
+
+// ---------- store (mirrors LearningStore.swift) ----------
+function emptyState() { return { progress: {}, bookmarks: [], checks: [], customTerms: [] }; }
+function load() {
+  try {
+    const raw = localStorage.getItem(KEY);
+    if (!raw) return emptyState();
+    const s = Object.assign(emptyState(), JSON.parse(raw));
+    for (const c of C.courses) s.progress[c.id] = Math.min(Math.max(s.progress[c.id] || 0, 0), c.steps.length);
+    s.customTerms = s.customTerms.filter(t => t.chapter >= 0 && t.chapter < C.chapters.length && t.name && String(t.id).startsWith("custom-"));
+    return s;
+  } catch (e) { return emptyState(); }
+}
+let S = load();
+function persist() { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) { /* storage unavailable: keep in memory */ } }
+
+const allTerms = () => C.terms.concat(S.customTerms);
+const termByName = n => allTerms().find(t => t.name === n);
+const stepIndex = c => S.progress[c.id] || 0;
+const isComplete = c => stepIndex(c) >= c.steps.length;
+const completedCount = () => C.courses.filter(isComplete).length;
+const completedSteps = () => C.courses.reduce((a, c) => a + stepIndex(c), 0);
+const totalSteps = () => C.courses.reduce((a, c) => a + c.steps.length, 0);
+const isBookmarked = id => S.bookmarks.includes(id);
+function toggleBookmark(id) { S.bookmarks = isBookmarked(id) ? S.bookmarks.filter(x => x !== id) : S.bookmarks.concat(id); persist(); }
+function setChecked(id, on) { S.checks = S.checks.filter(x => x !== id); if (on) S.checks.push(id); persist(); }
+function sourceFor(step) {
+  const v = C.sources[step.source];
+  return v && v.length === 2 && v[1].startsWith("https://") ? { title: v[0], url: v[1] } : null;
+}
+
+// ---------- routing ----------
+const view = { tab: "courses", category: "All", course: null, guide: null, about: false, query: "", filter: "all" };
+let optionOrder = [];
+function shuffle(n) { const a = [...Array(n).keys()]; for (let i = n - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; }
+function go(patch) { Object.assign(view, patch); render(); window.scrollTo(0, 0); }
+
+document.querySelectorAll(".tabs button").forEach(b => b.addEventListener("click", () => go({ tab: b.dataset.tab, course: null, guide: null, about: false })));
+
+// ---------- views ----------
+function courseCard(c) {
+  const i = stepIndex(c), n = c.steps.length;
+  const cta = isComplete(c) ? "Review this course" : i > 0 ? "Continue learning" : "Start the puzzle";
+  return `<button class="card course" data-open-course="${c.id}">
+    <div class="row"><div class="icon">${ICONS[c.id] || esc(c.icon)}</div><span class="muted small">${esc(c.tag)}</span></div>
+    <h3>${esc(c.title)}</h3>
+    <p class="muted">${esc(c.description)}</p>
+    <span class="muted small">${n} steps · ${esc(c.time)}</span>
+    <div class="bar" role="progressbar" aria-valuenow="${i}" aria-valuemax="${n}"><span style="width:${i / n * 100}%"></span></div>
+    <div class="cta"><span>${cta}</span><span>↗</span></div>
+  </button>`;
+}
+
+function homeView() {
+  const courses = C.courses.filter(c => view.category === "All" || c.category === view.category);
+  return `
+  <section class="hero">
+    <span class="eyebrow">Connect. Understand. Create.</span>
+    <h1>Connect the steps.<br>Build your confidence.</h1>
+    <p>Start learning AI and blockchain one step at a time. Choose a card, understand why, and work toward your goal.</p>
+    <div class="stats"><span>${C.courses.length} courses</span><span>${allTerms().length} terms</span><span>${completedCount()} complete</span></div>
+  </section>
+  <div><h2>Choose your learning goal</h2><p class="muted">Choose → Understand → Continue</p></div>
+  <div class="chips">${CATEGORIES.map(k => `<button class="chip" data-category="${esc(k)}" aria-pressed="${view.category === k}">${esc(k)}</button>`).join("")}</div>
+  <div class="grid">${courses.map(courseCard).join("")}</div>
+  <button class="banner" data-tab-go="glossary">
+    <span class="big">📖</span>
+    <span style="flex:1"><strong>Understand new terms as you learn.</strong><br><span class="muted small">Explore ${C.chapters.length} chapters and ${C.important.length} essential terms</span></span>
+    <span>→</span>
+  </button>
+  <p class="muted small">Progress is saved in this browser. It does not sync between devices.</p>`;
+}
+
+function courseView(c) {
+  const i = stepIndex(c), n = c.steps.length, step = c.steps[i];
+  let body;
+  if (step) {
+    if (optionOrder.length !== step.options.length || optionOrder.stepId !== step.id) { optionOrder = shuffle(step.options.length); optionOrder.stepId = step.id; }
+    const route = `<aside class="card route"><strong>Your path to the goal</strong><ul>${c.steps.map((s, k) =>
+      `<li class="${k < i ? "done" : k === i ? "now" : ""}"><span class="dot">${k < i ? "✓" : ""}</span><span>${esc(s.title)}</span></li>`).join("")}</ul>
+      <span class="muted small">${i} / ${n} complete</span></aside>`;
+    const q = `<section class="card question">
+      <span class="eyebrow">Step ${pad(i + 1)} / ${pad(n)}</span>
+      <h2>${esc(step.title)}</h2>
+      <p>${esc(step.question)}</p>
+      <div class="options">${optionOrder.map((oi, pos) =>
+        `<button class="option" data-answer="${oi}"><span class="letter">${String.fromCharCode(65 + pos)}</span><span>${esc(step.options[oi])}</span></button>`).join("")}</div>
+      ${tagsHtml(step.terms)}
+      <div class="notice">ⓘ <span>This is a learning simulation. It does not install software, issue tokens, deploy programs, or publish posts.</span></div>
+    </section>`;
+    body = `<div class="bar" role="progressbar" aria-valuenow="${i}" aria-valuemax="${n}"><span style="width:${i / n * 100}%"></span></div>
+      <div class="split">${route}${q}</div>`;
+  } else {
+    body = `<section class="card center" style="display:flex;flex-direction:column;gap:20px;padding:32px">
+      <div class="seal">✔︎</div>
+      <h2>You reached the learning goal!</h2>
+      <p class="muted">${n} steps completed.<br>Review the full workflow in the guide.</p>
+      <button class="primary" style="max-width:360px" data-open-guide="${c.id}">Review the guide</button>
+      <button class="secondary" data-reset-course="${c.id}">Try again</button>
+    </section>`;
+  }
+  return `<button class="back" data-back>‹ Courses</button>
+    <span class="eyebrow">${esc(c.category)} / Learning path</span>
+    <h1>${esc(c.title)}</h1>
+    <p class="muted">${esc(c.description)}</p>
+    ${body}
+    <button class="back" data-open-guide="${c.id}">☰ Open this course guide</button>`;
+}
+
+function tagsHtml(names) {
+  return `<div><p class="muted small" style="margin-bottom:8px">Related terms</p><div class="tags">${names.map(n => `<button class="tag" data-term="${esc(n)}">${esc(n)}</button>`).join("")}</div></div>`;
+}
+
+function filteredTerms() {
+  const q = view.query.trim().toLowerCase(), f = view.filter;
+  let list = allTerms().filter(t => {
+    const mf = f === "all" || (f === "important" && C.important.includes(t.name)) || (f === "bookmarks" && isBookmarked(t.id)) || f === String(t.chapter);
+    const mq = !q || `${t.name} ${t.full} ${t.description}`.toLowerCase().includes(q);
+    return mf && mq;
+  });
+  if (f === "important") list.sort((a, b) => C.important.indexOf(a.name) - C.important.indexOf(b.name));
+  return list;
+}
+
+function termCard(t) {
+  const custom = String(t.id).startsWith("custom-");
+  return `<div class="card term-card">
+    <div class="row"><span class="small" style="color:var(--accent)">${esc(C.chapters[t.chapter])}</span>
+      <button class="star" data-bookmark="${esc(t.id)}" aria-label="${esc(t.name)}: ${isBookmarked(t.id) ? "remove" : "add"} bookmark">${isBookmarked(t.id) ? "★" : "☆"}</button></div>
+    <button class="term-open" data-term="${esc(t.name)}">
+      <h3>${esc(t.name)}</h3>
+      <span class="small" style="color:var(--accent)">${esc(t.full)}</span>
+      <span class="muted">${esc(t.description)}</span>
+      ${C.important.includes(t.name) ? `<span class="small" style="color:var(--accent)">✪ ${C.important.length} essential terms</span>` : ""}
+      ${custom ? `<span class="muted small">Custom term</span>` : ""}
+    </button>
+    ${custom ? `<button class="back danger small" data-delete-term="${esc(t.id)}">Delete custom term</button>` : ""}
+  </div>`;
+}
+
+function glossaryResults() {
+  const list = filteredTerms();
+  return `<h3>${list.length} terms</h3>` + (list.length
+    ? `<div class="grid">${list.map(termCard).join("")}</div>`
+    : `<div class="card center" style="display:flex;flex-direction:column;gap:8px"><strong>No matching terms</strong><span class="muted">Try another search or chapter. Use the star button to bookmark terms.</span></div>`);
+}
+
+function glossaryView() {
+  return `<span class="eyebrow">Words that connect your learning</span>
+    <h2>Understand the terms.<br>Connect the steps.</h2>
+    <p class="muted small">${allTerms().length} terms · Glossary edition ${esc(C.glossaryDate)}</p>
+    <div class="toolbar">
+      <input type="search" id="q" autocomplete="off" placeholder="Search terms, full names, and definitions" value="${esc(view.query)}" aria-label="Search glossary">
+      <select id="filter" aria-label="Terms to display">
+        <option value="all">All chapters</option>
+        <option value="important">${C.important.length} essential terms</option>
+        <option value="bookmarks">Bookmarks</option>
+        ${C.chapters.map((c, i) => `<option value="${i}">${esc(c)}</option>`).join("")}
+      </select>
+      <button class="secondary" data-add-term>＋ Add a term</button>
+      <button class="secondary" data-export>⇪ Export</button>
+    </div>
+    <div id="results" style="display:flex;flex-direction:column;gap:16px">${glossaryResults()}</div>
+    <div class="notice">ⓘ <span>Never add actual secrets such as private keys or seed phrases to the glossary.</span></div>`;
+}
+
+function guidesView() {
+  return `<h1>Guides</h1>
+    <p class="muted">Review the workflow and track your real-world tasks.</p>
+    <div class="list-title">Course guides</div>
+    <div class="list">${C.courses.map(c => `<button class="list-item" data-open-guide="${c.id}">
+      <span style="display:flex;gap:14px;align-items:center"><span class="icon">${ICONS[c.id]}</span>
+      <span><strong>${esc(c.title)}</strong><br><span class="muted small">${c.steps.length} steps · ${esc(c.category)}</span></span></span><span class="muted">›</span></button>`).join("")}</div>
+    <p class="muted small">References checked: ${esc(C.referenceDate)}<br>Official references open in a new tab and require internet access.</p>`;
+}
+
+function guideDetail(c) {
+  return `<button class="back" data-back>‹ Back</button>
+    <span class="eyebrow">${esc(c.category)}</span>
+    <h1>${esc(c.title)}</h1>
+    <button class="secondary" style="align-self:flex-start" data-open-course="${c.id}">▦ Learn with the puzzle</button>
+    <div class="notice">ⓘ <span>This guide follows one learning workflow. Other tools or sequences may work too. Check prerequisites and official installation instructions before using commands. Social app interfaces vary by version, device, and account.</span></div>
+    ${c.steps.map((s, k) => {
+      const src = sourceFor(s);
+      return `<section class="card" style="display:flex;flex-direction:column;gap:16px">
+        <span class="eyebrow">Step ${pad(k + 1)}</span>
+        <h3>${esc(s.title)}</h3>
+        <p>${esc(s.explanation)}</p>
+        ${s.code ? `<pre class="code">${esc(s.code)}</pre>` : ""}
+        <details><summary>Choices and explanations</summary>
+          <p style="margin-top:10px"><strong>Correct choice for this workflow: ${esc(s.options[s.answer])}</strong></p>
+          <p class="muted small" style="margin-top:6px">${esc(s.wrong)}</p></details>
+        ${tagsHtml(s.terms)}
+        ${src ? `<a href="${esc(src.url)}" target="_blank" rel="noopener">↗ ${esc(src.title)}</a>` : ""}
+        <label class="check"><span>Verified in practice</span><span class="switch"><input type="checkbox" data-check="${s.id}" ${S.checks.includes(s.id) ? "checked" : ""} aria-label="${esc(s.title)}: verified in practice"><span></span></span></label>
+      </section>`;
+    }).join("")}
+    <p class="muted small">Checklist marks are saved separately from puzzle progress. References checked: ${esc(C.referenceDate)}</p>`;
+}
+
+function progressView() {
+  const done = completedSteps(), total = totalSteps();
+  return `<h1>Progress</h1>
+    <div class="list-title">Your learning progress</div>
+    <div class="list">
+      <div class="kv"><span>Completed courses</span><span class="muted">${completedCount()} / ${C.courses.length}</span></div>
+      <div class="kv"><span>Completed steps</span><span class="muted">${done} / ${total}</span></div>
+      <div class="kv"><span>Bookmarked terms</span><span class="muted">${S.bookmarks.length} terms</span></div>
+      <div class="kv"><span>Custom terms</span><span class="muted">${S.customTerms.length} terms</span></div>
+      <div style="padding:16px 20px"><div class="bar"><span style="width:${done / total * 100}%"></span></div></div>
+    </div>
+    <div class="list-title">Course progress</div>
+    <div class="list">${C.courses.map(c => `<button class="list-item" data-open-course="${c.id}"><span>${esc(c.title)}<br><span class="muted small">${stepIndex(c)} / ${c.steps.length} complete</span></span><span class="muted">›</span></button>`).join("")}</div>
+    <div class="list-title">About this app</div>
+    <div class="list">
+      <button class="list-item" data-about><span>Help and privacy</span><span class="muted">›</span></button>
+      <div class="kv"><span>Version</span><span class="muted">1.0 (web)</span></div>
+    </div>
+    <p class="muted small">Learning content is bundled with the page and works offline once loaded. Opening official reference links requires internet access.</p>
+    <div class="list"><button class="list-item danger" data-reset-all>Delete all progress and custom terms</button></div>
+    <p class="muted small">Records are saved in this browser without cross-device sync. Exported glossary files are not deleted by this action.</p>`;
+}
+
+function aboutView() {
+  return `<button class="back" data-back>‹ Progress</button>
+    <h1>StepCraft</h1>
+    <h3>Connect the steps. Build your confidence.</h3>
+    <h2>How to use StepCraft</h2>
+    <p>Choose a course and select cards that fit its goal. Read the explanation after a correct answer and tap Understand and continue. After an incorrect answer, read why and try again.</p>
+    <p>Search the glossary, filter by chapter, bookmark terms, or add your own. Export it as a text file.</p>
+    <div class="notice">ⓘ <span>This is an educational simulation. It does not configure an OS, issue tokens, deploy programs, or publish posts. The Solana courses teach a Windows workflow using WSL.</span></div>
+    <h2>Privacy</h2>
+    <p>Progress, bookmarks, checklist marks, and custom terms are stored in your browser. There is no developer server upload, account registration, advertising, analytics, or tracking.</p>
+    <p>Delete saved data in the Progress tab. Never enter private keys, seed phrases, or passwords as custom terms.</p>
+    <h2>About the lessons</h2>
+    <p>Lessons follow specific goals and tools. The selected editor is not the only valid editor. Ethereum and Bitcoin do not advance this Solana workflow because their tools are not interchangeable with it.</p>
+    <p class="muted small">Names such as Apple, Microsoft, Solana, YouTube, and Instagram belong to their respective owners. This app is not an official app of those services.</p>`;
+}
+
+// ---------- modals ----------
+const modal = document.getElementById("modal");
+function openSheet(title, inner, { closeLabel = "Close", onClose } = {}) {
+  modal.innerHTML = `<div class="overlay" data-overlay><div class="sheet" role="dialog" aria-modal="true" aria-label="${esc(title)}">
+    <div class="sheet-head"><span>${esc(title)}</span><button data-close>${esc(closeLabel)}</button></div>
+    <div class="sheet-body">${inner}</div></div></div>`;
+  modal.onClose = onClose || null;
+  const first = modal.querySelector(".sheet-body button, .sheet-body input");
+  if (first) first.focus({ preventScroll: true });
+}
+function closeSheet() { const cb = modal.onClose; modal.innerHTML = ""; modal.onClose = null; if (cb) cb(); }
+document.addEventListener("keydown", e => { if (e.key === "Escape" && modal.innerHTML) closeSheet(); });
+
+function showTerm(name) {
+  const t = termByName(name);
+  if (!t) return;
+  openSheet("Term definition", `<span class="eyebrow">${esc(C.chapters[t.chapter])}</span>
+    <h1>${esc(t.name)}</h1>
+    <span style="color:var(--accent)">${esc(t.full)}</span>
+    <p>${esc(t.description)}</p>
+    ${C.important.includes(t.name) ? `<span style="color:var(--accent)">✪ ${C.important.length} essential terms</span>` : ""}
+    <button class="secondary" style="align-self:flex-start" data-bookmark="${esc(t.id)}" data-rerender-term="${esc(t.name)}">${isBookmarked(t.id) ? "★ Remove bookmark" : "☆ Add bookmark"}</button>`);
+}
+
+function showFeedback(c, step, oi) {
+  const correct = oi === step.answer, last = step.id === c.steps[c.steps.length - 1].id, src = sourceFor(step);
+  openSheet("Choice explained", `
+    <div class="fb-icon ${correct ? "ok" : "ng"}">${correct ? "✔︎" : "↺"}</div>
+    <h2>${correct ? "Correct! This choice fits the workflow." : "This choice does not fit this step."}</h2>
+    <p class="muted small">Your choice: ${esc(step.options[oi])}</p>
+    <p>${esc(correct ? step.explanation : step.wrong)}</p>
+    ${correct && step.code ? `<p class="muted small">Example for real-world use (not executed by this app)</p><pre class="code">${esc(step.code)}</pre>` : ""}
+    ${src ? `<a href="${esc(src.url)}" target="_blank" rel="noopener">↗ ${esc(src.title)}</a>` : ""}
+    <button class="primary" data-feedback="${correct ? "advance" : "retry"}" data-step="${step.id}">${correct ? (last ? "Complete lesson" : "Understand and continue") : "Choose again"}</button>
+    ${correct ? `<p class="muted small">Closing this sheet returns to the same question without advancing.</p>` : ""}`);
+}
+
+function showAddTerm() {
+  openSheet("Add a term", `
+    <div class="field"><label for="t-ch">Chapter</label><select id="t-ch">${C.chapters.map((c, i) => `<option value="${i}">${esc(c)}</option>`).join("")}</select></div>
+    <div class="field"><label for="t-name">Term (up to 100 characters)</label><input type="text" id="t-name" autocomplete="off" maxlength="100"></div>
+    <div class="field"><label for="t-full">Full name or origin (up to 200 characters)</label><input type="text" id="t-full" autocomplete="off" maxlength="200"></div>
+    <div class="field"><label for="t-desc">Simple definition</label><textarea id="t-desc" maxlength="1000"></textarea><span class="muted small" id="t-count">0 / 1000 characters</span></div>
+    <div class="notice">ⓘ <span>Custom terms are saved in this browser. Never enter private keys or passwords.</span></div>
+    <button class="primary" data-save-term disabled>Save</button>`, { closeLabel: "Cancel" });
+}
+
+function confirmSheet(title, message, label, action) {
+  openSheet(title, `<p>${esc(message)}</p><button class="primary" style="background:#d70015" data-confirm>${esc(label)}</button>`, { closeLabel: "Cancel" });
+  modal.confirmAction = action;
+}
+
+function exportGlossary() {
+  const line = v => String(v).replace(/｜/g, "／").replace(/[\r\n]/g, " ");
+  const today = new Date().toLocaleDateString("sv-SE", { timeZone: "Asia/Tokyo" });
+  let out = `AI Development Beginner Glossary\nContent edition: ${C.glossaryDate}\nExported: ${today}\nTerm｜Full name or origin｜Simple definition\n\n`;
+  C.chapters.forEach((title, ch) => {
+    out += `${pad(ch + 1)}. ${title}\n` + allTerms().filter(t => t.chapter === ch).map(t => `${line(t.name)}｜${line(t.full)}｜${line(t.description)}`).join("\n") + "\n\n";
+  });
+  out += `09. ${C.important.length} essential terms\n${C.important.join(" → ")}\n\n10. New term template\nTerm｜Full name or origin｜Simple definition\n`;
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(new Blob([out], { type: "text/plain;charset=utf-8" }));
+  a.download = "AI_Development_Beginner_Glossary.txt";
+  a.click();
+  setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+}
+
+// ---------- render & events ----------
+const app = document.getElementById("app");
+function currentCourse() { return C.courses.find(c => c.id === view.course); }
+function render() {
+  document.querySelectorAll(".tabs button").forEach(b => b.setAttribute("aria-selected", b.dataset.tab === view.tab));
+  if (view.course) app.innerHTML = courseView(currentCourse());
+  else if (view.guide) app.innerHTML = guideDetail(C.courses.find(c => c.id === view.guide));
+  else if (view.about) app.innerHTML = aboutView();
+  else app.innerHTML = { courses: homeView, glossary: glossaryView, guides: guidesView, progress: progressView }[view.tab]();
+  const f = document.getElementById("filter");
+  if (f) f.value = view.filter;
+}
+
+app.addEventListener("input", e => {
+  if (e.target.id === "q") { view.query = e.target.value; document.getElementById("results").innerHTML = glossaryResults(); }
+});
+app.addEventListener("change", e => {
+  if (e.target.id === "filter") { view.filter = e.target.value; document.getElementById("results").innerHTML = glossaryResults(); }
+  if (e.target.dataset.check) setChecked(e.target.dataset.check, e.target.checked);
+});
+app.addEventListener("click", e => {
+  const el = e.target.closest("button");
+  if (!el) return;
+  const d = el.dataset;
+  if (d.category) go({ category: d.category });
+  else if (d.openCourse) { view.tab = "courses"; go({ course: d.openCourse, guide: null, about: false }); }
+  else if (d.openGuide) { view.tab = "guides"; go({ guide: d.openGuide, course: null }); }
+  else if (d.tabGo) go({ tab: d.tabGo });
+  else if ("back" in d) go({ course: null, guide: null, about: false });
+  else if ("about" in d) go({ about: true });
+  else if (d.answer !== undefined) { const c = currentCourse(); showFeedback(c, c.steps[stepIndex(c)], Number(d.answer)); }
+  else if (d.term) showTerm(d.term);
+  else if (d.bookmark) { toggleBookmark(d.bookmark); if (view.tab === "glossary" && !view.course && !view.guide) document.getElementById("results").innerHTML = glossaryResults(); else render(); }
+  else if ("addTerm" in d) showAddTerm();
+  else if ("export" in d) exportGlossary();
+  else if (d.deleteTerm) { const t = S.customTerms.find(x => x.id === d.deleteTerm); confirmSheet("Delete this custom term?", t ? t.name : "", "Delete", () => { S.customTerms = S.customTerms.filter(x => x.id !== d.deleteTerm); S.bookmarks = S.bookmarks.filter(x => x !== d.deleteTerm); persist(); }); }
+  else if (d.resetCourse) confirmSheet("Restart this course?", "Bookmarks and guide checklist marks will be kept.", "Restart course", () => { S.progress[d.resetCourse] = 0; persist(); });
+  else if ("resetAll" in d) confirmSheet("Delete learning records in this browser?", "This deletes course progress, bookmarks, checklist marks, and custom terms. It cannot be undone. Built-in terms and courses are kept.", "Delete all", () => { S = emptyState(); try { localStorage.removeItem(KEY); } catch (err) {} });
+});
+
+modal.addEventListener("click", e => {
+  if (e.target.matches("[data-overlay]") || e.target.closest("[data-close]")) { closeSheet(); return; }
+  const el = e.target.closest("button");
+  if (!el) return;
+  const d = el.dataset;
+  if (d.feedback === "advance") {
+    const c = currentCourse(), i = stepIndex(c);
+    if (c.steps[i] && c.steps[i].id === d.step) { S.progress[c.id] = i + 1; persist(); }
+    modal.innerHTML = ""; render(); window.scrollTo(0, 0);
+  } else if (d.feedback === "retry") closeSheet();
+  else if (d.bookmark) { toggleBookmark(d.bookmark); showTerm(d.rerenderTerm); modal.onClose = render; }
+  else if (d.term) showTerm(d.term);
+  else if ("confirm" in d) { const act = modal.confirmAction; modal.confirmAction = null; modal.innerHTML = ""; act(); render(); }
+  else if ("saveTerm" in d) {
+    const v = id => document.getElementById(id).value.trim();
+    S.customTerms.push({ id: "custom-" + (crypto.randomUUID ? crypto.randomUUID() : Date.now()), name: v("t-name"), full: v("t-full"), description: v("t-desc"), chapter: Number(v("t-ch")) });
+    persist(); modal.innerHTML = ""; render();
+  }
+});
+modal.addEventListener("input", () => {
+  const save = modal.querySelector("[data-save-term]");
+  if (!save) return;
+  const v = id => document.getElementById(id).value.trim();
+  document.getElementById("t-count").textContent = `${document.getElementById("t-desc").value.length} / 1000 characters`;
+  save.disabled = !(v("t-name") && v("t-full") && v("t-desc"));
+});
+
+render();
+</script>
+</body>
+</html>
